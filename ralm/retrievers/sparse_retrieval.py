@@ -14,13 +14,13 @@ class SparseRetriever(BaseRetriever):
         self.forbidden_titles = self._get_forbidden_titles(forbidden_titles_path)
 
     def _get_searcher(self, index_name):
-        try:
-            print(f"Attempting to download the index as if prebuilt by pyserini")
-            return LuceneSearcher.from_prebuilt_index(index_name)
-        except ValueError:
+        print(f"Attempting to download the index as if prebuilt by pyserini")
+        searcher = LuceneSearcher.from_prebuilt_index(index_name)
+        if searcher is None:
             print(f"Index does not exist in pyserini.")
             print("Attempting to treat the index as a directory (not prebuilt by pyserini)")
-            return LuceneSearcher(index_name)
+            searcher = LuceneSearcher(index_name)
+        return searcher
 
     def _get_forbidden_titles(self, forbidden_titles_path):
         if forbidden_titles_path is None:
